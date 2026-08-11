@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: expense_tracker
+  datasource:
+    url: jdbc:postgresql://localhost:5450/expense-tracker-db
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update

@@ -9,7 +9,8 @@ import com.allan.expense_tracker.entity.Expense;
 import com.allan.expense_tracker.dto.ExpenseResponse;
 import com.allan.expense_tracker.dto.ExpenseRequest;
 import com.allan.expense_tracker.exception.ResourceNotFoundException;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor // replaces the constructor
@@ -34,18 +35,13 @@ public class ExpenseService {
     return ExpenseResponse.from(expense); // convert to response DTO
   }
 
-  public List<ExpenseResponse> getExpensesByCategory(String category) {
-    return expenseRepository.findByCategory(category)
-      .stream() // turn the list into a stream, so we can transform each item
-      .map(ExpenseResponse::from)//expense -> ExpenseResponse.from(expense)  // convert each entity to a response DTO
-      .toList(); // collect the results back into a list
-  }
+  public Page<ExpenseResponse> getAllExpenses(String category, Pageable pageable) {
+    // filter by category if given, otherwise get everything - both paginated + sorted via pageable
+    Page<Expense> expenses = (category != null)
+      ? expenseRepository.findByCategory(category, pageable)
+      : expenseRepository.findAll(pageable);
 
-  public List<ExpenseResponse> getAllExpenses() {
-    return expenseRepository.findAll()
-      .stream()
-      .map(ExpenseResponse::from)
-      .toList();
+    return expenses.map(ExpenseResponse::from); // convert each entity to a DTO, keep pagination info intact
   }
 
   @Transactional

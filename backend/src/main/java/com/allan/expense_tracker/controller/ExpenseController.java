@@ -2,6 +2,8 @@ package com.allan.expense_tracker.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import java.net.URI;
+
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,9 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.allan.expense_tracker.dto.ExpenseRequest;
 import com.allan.expense_tracker.dto.ExpenseResponse;
-import java.util.List;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,8 +45,10 @@ public class ExpenseController {
   }
 
   @GetMapping
-  public ResponseEntity<List<ExpenseResponse>> getAllExpenses() {
-    List<ExpenseResponse> response = expenseService.getAllExpenses();
+  public ResponseEntity<Page<ExpenseResponse>> getAllExpenses(
+    @RequestParam(required = false) String category, @PageableDefault(size = 20, sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
+    // optional filter, e.g. ?category=Food // page/size/sort from query params, defaults if not given
+    Page<ExpenseResponse> response = expenseService.getAllExpenses(category, pageable);
     return ResponseEntity.ok(response);
   }
   

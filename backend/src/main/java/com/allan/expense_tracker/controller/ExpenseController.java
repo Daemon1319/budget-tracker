@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,5 +64,13 @@ public class ExpenseController {
   public ResponseEntity<Void> deleteExpense(@PathVariable Long id) {
     expenseService.deleteExpense(id);
     return ResponseEntity.noContent().build(); // 204 No Content
+  }
+
+  @GetMapping("/summary/total")
+  public ResponseEntity<BigDecimal> getTotalAmount(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
+    BigDecimal totalAmount = (startDate != null && endDate != null) 
+      ? expenseService.getTotalAmountByDateRange(startDate, endDate) 
+      : expenseService.getTotalAmount();
+    return ResponseEntity.ok(totalAmount);
   }
 }

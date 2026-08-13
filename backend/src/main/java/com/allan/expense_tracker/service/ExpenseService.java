@@ -11,6 +11,8 @@ import com.allan.expense_tracker.dto.ExpenseRequest;
 import com.allan.expense_tracker.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor // replaces the constructor
@@ -65,5 +67,15 @@ public class ExpenseService {
       throw new ResourceNotFoundException("Expense not found with id: " + id);
     }
     expenseRepository.deleteById(id);
+  }
+
+  public BigDecimal getTotalAmount() {
+    BigDecimal total = expenseRepository.getTotalAmount();
+    return total != null ? total : BigDecimal.ZERO;
+  }
+
+  public BigDecimal getTotalAmountByDateRange(LocalDate startDate, LocalDate endDate) {
+    BigDecimal total = expenseRepository.getTotalAmountByDateRange(startDate, endDate);
+    return total != null ? total : BigDecimal.ZERO;
   }
 }

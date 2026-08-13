@@ -69,11 +69,6 @@ public class ExpenseService {
     expenseRepository.deleteById(id);
   }
 
-  public BigDecimal getTotalAmount() {
-    BigDecimal total = expenseRepository.getTotalAmount();
-    return total != null ? total : BigDecimal.ZERO;
-  }
-
   public BigDecimal getTotalAmountByDateRange(LocalDate startDate, LocalDate endDate) {
     BigDecimal total = expenseRepository.getTotalAmountByDateRange(startDate, endDate);
     return total != null ? total : BigDecimal.ZERO;

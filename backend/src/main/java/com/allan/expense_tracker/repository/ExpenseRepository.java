@@ -17,8 +17,6 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> { // is-
   // or SELECT * FROM expenses WHERE category = ?
 
   // format: @Query("...") ReturnType methodName(params);
-  @Query("SELECT SUM(e.amount) FROM Expense e") BigDecimal getTotalAmount();
-
   @Query("SELECT SUM(e.amount) FROM Expense e WHERE e.date BETWEEN :startDate AND :endDate")
   BigDecimal getTotalAmountByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

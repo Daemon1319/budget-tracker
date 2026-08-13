@@ -67,10 +67,15 @@ public class ExpenseController {
   }
 
   @GetMapping("/summary/total")
-  public ResponseEntity<BigDecimal> getTotalAmount(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
-    BigDecimal totalAmount = (startDate != null && endDate != null) 
-      ? expenseService.getTotalAmountByDateRange(startDate, endDate) 
-      : expenseService.getTotalAmount();
+  public ResponseEntity<BigDecimal> getTotalAmount(
+    @RequestParam(required = false) LocalDate startDate,
+    @RequestParam(required = false) LocalDate endDate) {
+
+    // missing dates default to the full range - MIN as the earliest bound, today as the latest
+    LocalDate effectiveStart = (startDate != null) ? startDate : LocalDate.MIN;
+    LocalDate effectiveEnd = (endDate != null) ? endDate : LocalDate.now();
+
+    BigDecimal totalAmount = expenseService.getTotalAmountByDateRange(effectiveStart, effectiveEnd);
     return ResponseEntity.ok(totalAmount);
   }
 }
